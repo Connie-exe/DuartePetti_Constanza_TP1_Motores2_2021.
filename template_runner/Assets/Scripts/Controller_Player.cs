@@ -79,13 +79,21 @@ public class Controller_Player : MonoBehaviour
             floored = true; //el bool de floored pasa a ser true
         }
 
-        if(collision.gameObject.CompareTag("Bubble"))
+        if(collision.gameObject.CompareTag("Bubble")) //si el objeto (jugador) colisiona con el objeto de etiqueta bubble
         {
             //if (ProgressBar.timeLeft <= ProgressBar.maxTime)
             {
-                ProgressBar.timeLeft = ProgressBar.timeLeft + 10f;
+                ProgressBar.timeLeft = ProgressBar.timeLeft + 10f; //a la progressbar se le agrega 10f, haciendo que dure más
             }
-            Destroy(collision.gameObject);
+            Destroy(collision.gameObject); //luego de collisionar el objeto con el que se hace collision se destruye
+
+        }
+        if (collision.gameObject.CompareTag("Coin")) //si el objeto (jugador) colisiona con el objeto de etiqueta coin
+        {
+            {
+                FindObjectOfType<GameManager>().AddGold(); //se llama a la función AddGold del GameManager
+            }
+            Destroy(collision.gameObject); //luego de collisionar el objeto con el que se hace collision se destruye
 
         }
     }

@@ -4,12 +4,12 @@ using UnityEngine.UI; //para poder trabajar con objetos de la ui
 public class Controller_Hud : MonoBehaviour
 {
     public static bool gameOver = false; //se declara el valor del bool de gameover como false porque no se perdió todavía
-    public Text distanceText; // se llama al objeto de la ui como public para asignarlo el unity
+    public Text distanceText; // se declara al objeto de la ui como public para asignarlo el unity
     public Text gameOverText; //idem arriba
-    private float distance = 0; // se declara la distancia como float porque no e sun númeor exacto (int)
-    public float rounded; //declaro un nuevo valor float para poder usarlo sin perjudicar el sistema de medición de distancia
-    public float highscore = 0f;
-    public Text Highscore;
+    public static float distance = 0; // se declara la distancia como float porque no e sun númeor exacto (int)
+    public static float rounded; //declaro un nuevo valor float para poder usarlo sin perjudicar el sistema de medición de distancia
+    public float highscore = 0f; //se declara un float para que sea el portador del puntaje más alto
+    public Text Highscore; // se declara al objeto de la ui como public para asignarlo el unity
 
     void Start()
     {
@@ -17,8 +17,7 @@ public class Controller_Hud : MonoBehaviour
         distance = 0; //la distancia sigue valiendo 0
         distanceText.text = distance.ToString(); //se traspasa el valor de la distancia a string para que pueda verse en el text de la ui
         gameOverText.gameObject.SetActive(false); //se desactiva el tento de gameover para que no se vea en pantalla
-        /*PlayerPrefs.SetFloat("Record", 0f)*/;
-        Highscore.text = "RECORD: " + PlayerPrefs.GetFloat("MaxValor", 0).ToString();
+        Highscore.text = "Record: " + Persistencia.instancia.data.record.ToString(); //se inicializa el texto del record con el valor en forma de string del script Persistencia
     }
 
     void Update()
@@ -28,6 +27,11 @@ public class Controller_Hud : MonoBehaviour
             Time.timeScale = 0; //el time.timeScae pasa a valer 0
             gameOverText.text = "Game Over \n Total Distance: " + rounded.ToString(); // se setea lo que el texto de gameover dirá y se le agrega el valor de distancia redondeado que tenía el jugador nates de perder
             gameOverText.gameObject.SetActive(true); //y se activa el texto de gameover para que se vea ne pantalla
+            if(Persistencia.instancia.data.record < highscore) //si el valor record del script Persistencia es menor al valor de puntaje máximo guardado
+            {
+                Persistencia.instancia.data.record = highscore; //ahora el valor record del script de Persistencia vale el el valor máximo guardado
+                Highscore.text = "Record: " + highscore.ToString(); //en el texto del valor máximo se actualiza el valor
+            }
         }
         else  //si gameover es false
         {
@@ -36,15 +40,10 @@ public class Controller_Hud : MonoBehaviour
             distanceText.text = rounded.ToString(); //se muestra en pantalla en forma de string el valor de distancia (ahora redondeado), a todo momento
         
         }
-    }
-
-    public void Record()
-    {
-        if (rounded > PlayerPrefs.GetFloat("MaxValor", 0))
+        if(distance > highscore && distance > Persistencia.instancia.data.record) //si la distancia es mayor al valor máximo guardado y la distancia es mayor a el valor record del script Persistencia
         {
-            highscore = rounded;
-            PlayerPrefs.SetFloat("MaxValor", highscore);
-            Highscore.text = "RECORD: " + highscore.ToString();
+            highscore = distance; //el valor máximo guardado pasa a valer lo que vale la distancia
         }
     }
+
 }
